@@ -1,0 +1,16 @@
+package gianmarte.u5w3d5.exceptions;
+
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
+public class ValidationException extends RuntimeException {
+    private List<String> errorsMessages;
+
+    public ValidationException(List<String> errorsMessages) {
+
+        super("errori nel payload");
+        this.errorsMessages = errorsMessages;
+    }
+}

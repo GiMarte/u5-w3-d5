@@ -1,9 +1,9 @@
 package gianmarte.u5w3d5.services;
 
 import gianmarte.u5w3d5.entities.User;
-import gianmarte.u5w3d5.enums.Role;
 import gianmarte.u5w3d5.exceptions.BadRequestException;
 import gianmarte.u5w3d5.exceptions.NotFoundException;
+import gianmarte.u5w3d5.exceptions.UnauthorizedException;
 import gianmarte.u5w3d5.payloads.UserDTO;
 import gianmarte.u5w3d5.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,11 @@ public class UserService {
         this.userRepository.findByUsername(dto.username()).ifPresent(user -> {
             throw new BadRequestException("L'user " + user.getUsername() + " è già in uso!");
         });
-        User newOrganizer = new User(Role.ORGANIZER, dto.username(), dto.password());
+        User newOrganizer = new User(dto.username(), dto.password(),dto.role());
         User savedOrg = this.userRepository.save(newOrganizer);
        System.out.printf("L'utente con id " + savedOrg.getId() + " è stato salvato");
        return savedOrg;
     }
-
-
 
     public User findById(Long userId) {
         return this.userRepository.findById(userId)
@@ -46,4 +44,7 @@ public class UserService {
         return this.userRepository.findAll(pageable);
     }
 
-}
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                             .orElseThrow(() -> new UnauthorizedException("Credenziali sbagliate"));
+    }}

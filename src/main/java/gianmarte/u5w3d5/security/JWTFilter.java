@@ -40,18 +40,17 @@ public class JWTFilter extends OncePerRequestFilter {
         Long userId = jwtTools.extractIdFromToken(accessToken);
         User authenticatedUser = this.userService.findById(userId);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(authenticatedUser, null);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(authenticatedUser, null, authenticatedUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
 
+
     }
 
-    // Tramite l'Override del metodo sottostante posso specificare quando il filtro non debba essere chiamato in causa
-    // Ad esempio posso dirgli di non filtrare tutte le richieste dirette al controller "/auth"
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return new AntPathMatcher().match("/auth/**", request.getServletPath());
-        // return request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/auth/register");
+
     }
 }

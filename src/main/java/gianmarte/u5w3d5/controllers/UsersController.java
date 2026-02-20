@@ -1,13 +1,13 @@
 package gianmarte.u5w3d5.controllers;
 
 import gianmarte.u5w3d5.entities.User;
-import gianmarte.u5w3d5.payloads.UserDTO;
 import gianmarte.u5w3d5.services.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -23,13 +23,4 @@ public class UsersController {
                               @RequestParam(defaultValue = "5") int size) {
         return this.userService.findAll(page, size);
     }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO newUser(@Valid @RequestBody UserDTO payload) {
-        User salvato = userService.save(payload);
-        return new UserDTO(salvato.getUsername(), salvato.getPassword())
-        ;
-    }
-
 }
