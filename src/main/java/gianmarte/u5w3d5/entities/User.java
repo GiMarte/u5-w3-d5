@@ -18,12 +18,14 @@ public class User {
         @Enumerated(EnumType.STRING)
         private Role role;
         private String username;
+        private String password;
         private String name;
         private String surname;
 
-         public User(Role role, String username, String name, String surname) {
-            this.role = role;
-            this.username = username;
-            this.name = name;
-            this.surname = surname;
+        public User(Role role, String username, String password, String name, String surname) {
+    this.role = role;
+    this.username = username;
+    this.password = password;
+    this.name = name;
+    this.surname = surname;
 }}
