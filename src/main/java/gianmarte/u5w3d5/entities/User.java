@@ -15,17 +15,17 @@ public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-        @Enumerated(EnumType.STRING)
-        private Role role;
-        private String username;
-        private String password;
-        private String name;
-        private String surname;
 
-        public User(Role role, String username, String password, String name, String surname) {
+        @Column(nullable = false)
+        private String username;
+        @Column(nullable = false)
+        private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public User(Role role, String password, String username) {
     this.role = role;
-    this.username = username;
     this.password = password;
-    this.name = name;
-    this.surname = surname;
+    this.username = username;
 }}

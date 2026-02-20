@@ -7,8 +7,4 @@ public class UserDTO {
     String username;
     @NotBlank
     String password;
-    @NotBlank
-    String name;
-    @NotBlank
-    String surname;
 }
