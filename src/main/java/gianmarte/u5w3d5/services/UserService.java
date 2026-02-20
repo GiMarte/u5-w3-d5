@@ -11,40 +11,46 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder bcrypt;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder bcrypt) {
         this.userRepository = userRepository;
+        this.bcrypt = bcrypt;
     }
 
-    public User save(UserDTO dto){
+    public User save(UserDTO dto) {
         this.userRepository.findByUsername(dto.username()).ifPresent(user -> {
             throw new BadRequestException("L'user " + user.getUsername() + " è già in uso!");
         });
-        User newOrganizer = new User(dto.username(), dto.password(),dto.role());
+        User newOrganizer = new User(dto.username(), bcrypt.encode(dto.password()), dto.role());
         User savedOrg = this.userRepository.save(newOrganizer);
-       System.out.printf("L'utente con id " + savedOrg.getId() + " è stato salvato");
-       return savedOrg;
+        System.out.println("L'utente con id " + savedOrg.getId() + " è stato salvato");
+        return savedOrg;
     }
 
     public User findById(Long userId) {
         return this.userRepository.findById(userId)
-                                   .orElseThrow(() -> new NotFoundException(userId));
+                .orElseThrow(() -> new NotFoundException(userId));
     }
 
     public Page<User> findAll(int page, int size) {
-        if (size > 100 || size < 0) size = 10;
-        if (page < 0) page = 0;
+        if (size > 100 || size < 0)
+            size = 10;
+        if (page < 0)
+            page = 0;
         Pageable pageable = PageRequest.of(page, size);
         return this.userRepository.findAll(pageable);
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                             .orElseThrow(() -> new UnauthorizedException("Credenziali sbagliate"));
-    }}
+                .orElseThrow(() -> new UnauthorizedException("Credenziali sbagliate"));
+    }
+}
